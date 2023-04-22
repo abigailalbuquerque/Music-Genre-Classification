@@ -10,8 +10,8 @@ import numpy as np
 
 genres = ['Blues', 'Classical', 'Country', 'Electronic', 'Hip-Hop', 'Jazz', 'Metal', 'Pop', 'Reggae', 'Rock']
 for genre in genres:
-    for song in os.listdir('monowav/' + genre):
-        samples, sample_rate = librosa.load('monowav/' + genre + '/' + song, sr=None)
+    for song in os.listdir('./monowav/' + genre):
+        samples, sample_rate = librosa.load('./monowav/' + genre + '/' + song, sr=None)
 
         sgram = librosa.stft(samples)
 
@@ -24,3 +24,5 @@ for genre in genres:
         librosa.display.specshow(mel_sgram, sr=sample_rate, x_axis='time', y_axis='mel')
         plt.axis('off')
         plt.savefig('melspecs/' + genre + '/' + song[:-4] + '.png', bbox_inches='tight', pad_inches=0)
+        print("done with " + genre + '/' + song)
+
