@@ -38,6 +38,12 @@ X_train, X_test, y_train, y_test = train_test_split(X_normal, y, test_size=0.2)
 le = LabelEncoder()
 y_train = le.fit_transform(y_train)
 
+# Feature Importance
+logistic = SelectFromModel(LogisticRegression(C=0.5, penalty="l1", solver='liblinear', random_state=7).fit(X, y))
+logistic.get_support()
+removed_feats = X.columns[logistic.get_support()]
+print(removed_feats)
+
 
 def model_assess(model, title="Default"):
     model.fit(X_train, y_train)
@@ -46,17 +52,8 @@ def model_assess(model, title="Default"):
     print('Accuracy', title, ':', round(accuracy_score(y_test, preds), 5))
 
 
-nb = GaussianNB()
-model_assess(nb, "Naive Bayes")
-
-sgd = SGDClassifier(max_iter=5000, random_state=0)
-model_assess(sgd, "Stochastic Gradient Descent")
-
 knn = KNeighborsClassifier(n_neighbors=12)
 model_assess(knn, "KNN")
-
-tree = DecisionTreeClassifier()
-model_assess(tree, "Decision trees")
 
 rforest = RandomForestClassifier(n_estimators=1000, max_depth=10, random_state=0)
 model_assess(rforest, "Random Forest")
@@ -70,13 +67,10 @@ model_assess(svm, "Support Vector Machine")
 nn = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5000, 10), random_state=1)
 model_assess(nn, "Neural Nets")
 
-ada = AdaBoostClassifier(n_estimators=1000)
-model_assess(ada, "AdaBoost")
-
 # Cross Gradient Booster
 xgb = XGBClassifier(n_estimators=1000, learning_rate=0.05)
 model_assess(xgb, "Cross Gradient Booster")
 
 # Cross Gradient Booster (Random Forest)
-xgbrf = XGBRFClassifier(objective='multi:softmax')
+xgbrf = XGBRFClassifier(objective= 'multi:softmax')
 model_assess(xgbrf, "Cross Gradient Booster (Random Forest)")
