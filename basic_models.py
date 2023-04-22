@@ -63,3 +63,4 @@ model_assess(nn, "Neural Nets")
 
 ada = AdaBoostClassifier(n_estimators=1000)
 model_assess(ada, "AdaBoost")
+
