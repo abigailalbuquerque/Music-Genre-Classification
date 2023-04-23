@@ -66,21 +66,23 @@ if (len(sys.argv)!= 3):
 model = pickle.load(open(sys.argv[1],'rb'))
 
 csvwriter = csv.writer(open(sys.argv[2], 'w'))
-scaler = StandardScaler()
+scaler = pickle.load(open("scaler_model.sav",'rb'))
 
-for genre in ['Country', 'Blues','Classical','Electronic','Hip Hop', 'Jazz', 'Metal', 'Pop', 'Reggae','Rock']:
+for genre in ['Country','Blues','Classical','Electronic','Hip Hop', 'Jazz', 'Metal', 'Pop', 'Reggae','Rock']:
     for song in os.listdir('wavfiles/' + genre):
         song_features = featurize("wavfiles/" + genre + '/' + song)
         
         # Normalising the dataset
         song_normal = np.array(song_features, dtype=float).reshape(1,-1)
-        print(song_normal)
-        song_normal = scaler.fit_transform(np.array(song_features, dtype=float).reshape(1,-1))
+        
+        song_normal = scaler.transform(np.array(song_features, dtype=float).reshape(1,-1))
+        #print(song_normal)
         print(model.classes_)
         song_proba = model.predict_proba(song_normal)
         print(model.predict(song_normal))
         #print(song)
         print(song_proba)
+
 ##TODO: Featurize songs##
 
 
