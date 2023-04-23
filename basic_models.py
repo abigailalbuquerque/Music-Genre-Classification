@@ -47,6 +47,15 @@ def model_assess(model, title="Default"):
     preds = le.inverse_transform(preds)
     print('Accuracy', title, ':', round(accuracy_score(y_test, preds), 5))
 
+def model_assess_proba(model, title="Default"):
+    model.fit(X_train, y_train)
+    preds_proba = model.predict_proba(X_test)
+    preds = []
+    for sample in preds_proba:
+        preds.append(model.classes_[sample.argmax()])
+    preds = le.inverse_transform(preds)
+    print('Accuracy', title, ':', round(accuracy_score(y_test, preds), 5))
+
 
 nb = GaussianNB()
 model_assess(nb, "Naive Bayes")
@@ -75,11 +84,6 @@ model_assess(nn, "Neural Nets")
 ada = AdaBoostClassifier(n_estimators=1000)
 model_assess(ada, "AdaBoost")
 
-# Cross Gradient Booster
-xgb = XGBClassifier(n_estimators=1000, learning_rate=0.05)
-model_assess(xgb, "Cross Gradient Booster")
-
-# Cross Gradient Booster (Random Forest)
-xgbrf = XGBRFClassifier(objective='multi:softmax')
-model_assess(xgbrf, "Cross Gradient Booster (Random Forest)")
-
+clf = CalibratedClassifierCV(svm)
+model_assess_proba(clf, "CLF based on SVM")
+pickle.dump(svm,open("svm_model.sav",'wb'))
