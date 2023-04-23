@@ -1,12 +1,15 @@
 import sys
-
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import Audio
 import soundfile as sf
 import os
-
 import librosa
+import multiprocessing as mp
+
+GENRES = ['Blues', 'Classical', 'Country', 'Electronic', 'Hip-Hop', 'Jazz', 'Metal', 'Pop', 'Reggae', 'Rock']
+WAV_DIR = "./new_wav/"
 
 def seperator (song, genre):
     # Loading test file
@@ -40,11 +43,20 @@ def seperator (song, genre):
     sf.write(genre+'_separated/instrument_file_'+song+'.wav', y_background[0 * sr:20 * sr], sr, 'PCM_24')
 
 
+def vocal_separation_for_genre(genre):
+    start = time.time()
+    
+    genre_dir = "./" + genre + "/"
+    for song in os.listdir(genre_dir):
+        seperator(song, genre)
+    
+    end = time.time()
+    print("~~ thread separating vocals for  " + genre + "  took " + str((end-start)/60) + " minutes")
+
+
 if __name__ == "__main__":
-    genreList = ["Blues", "Classical", "Country", "Electronic", "Hip Hop", "Jazz", "Metal", "Pop", "Reggae", "Rock"]
-    for i in range(len(genreList)):
-        for filename in os.listdir(genreList[i]):
-            f = os.path.join(genreList[i], filename)
-            if os.path.isfile(f):
-                seperator(filename, genreList[i])
+    for genre in GENRES:
+        p = mp.Process(target=vocal_separation_for_genre, args=(genre,))
+        p.start()
     sys.exit(0)
+
