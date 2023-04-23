@@ -11,6 +11,9 @@ from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.metrics import confusion_matrix, accuracy_score, roc_auc_score, roc_curve
+from xgboost import XGBClassifier, XGBRFClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_selection import SelectFromModel
 import pickle
 
 # Reading the data from csv into dataframe
@@ -33,20 +36,17 @@ X_normal = scaler.fit_transform(np.array(X, dtype=float))
 # Split the data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X_normal, y, test_size=0.2)
 
+# Encoding the labels
+le = LabelEncoder()
+y_train = le.fit_transform(y_train)
+
 
 def model_assess(model, title="Default"):
     model.fit(X_train, y_train)
     preds = model.predict(X_test)
-    
+    preds = le.inverse_transform(preds)
     print('Accuracy', title, ':', round(accuracy_score(y_test, preds), 5))
 
-def model_assess_proba(model, title="Default"):
-    model.fit(X_train, y_train)
-    preds_proba = model.predict_proba(X_test)
-    preds = []
-    for sample in preds_proba:
-        preds.append(model.classes_[sample.argmax()])
-    print('Accuracy', title, ':', round(accuracy_score(y_test, preds), 5))
 
 nb = GaussianNB()
 model_assess(nb, "Naive Bayes")
@@ -58,7 +58,7 @@ knn = KNeighborsClassifier(n_neighbors=12)
 model_assess(knn, "KNN")
 
 tree = DecisionTreeClassifier()
-model_assess(tree, "Decission trees")
+model_assess(tree, "Decision trees")
 
 rforest = RandomForestClassifier(n_estimators=1000, max_depth=10, random_state=0)
 model_assess(rforest, "Random Forest")
@@ -75,6 +75,11 @@ model_assess(nn, "Neural Nets")
 ada = AdaBoostClassifier(n_estimators=1000)
 model_assess(ada, "AdaBoost")
 
-clf = CalibratedClassifierCV(svm)
-model_assess_proba(clf, "CLF based on SVM")
-pickle.dump(svm,open("svm_model.sav",'wb'))
+# Cross Gradient Booster
+xgb = XGBClassifier(n_estimators=1000, learning_rate=0.05)
+model_assess(xgb, "Cross Gradient Booster")
+
+# Cross Gradient Booster (Random Forest)
+xgbrf = XGBRFClassifier(objective='multi:softmax')
+model_assess(xgbrf, "Cross Gradient Booster (Random Forest)")
+
