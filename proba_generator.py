@@ -67,8 +67,8 @@ model = pickle.load(open(sys.argv[1],'rb'))
 
 csvwriter = csv.writer(open(sys.argv[2], 'w'))
 scaler = pickle.load(open("scaler_model.sav",'rb'))
-
-for genre in ['Country','Blues','Classical','Electronic','Hip Hop', 'Jazz', 'Metal', 'Pop', 'Reggae','Rock']:
+csvwriter.writerow(["Song Name", 'Blues', 'Classical', 'Country', 'Electronic', 'Hip-Hop', 'Jazz', 'Metal', 'Pop', 'Reggae', 'Rock'])
+for genre in ['Country','Blues','Classical','Electronic','Hip-Hop', 'Jazz', 'Metal', 'Pop', 'Reggae','Rock']:
     for song in os.listdir('wavfiles/' + genre):
         song_features = featurize("wavfiles/" + genre + '/' + song)
         
@@ -82,7 +82,11 @@ for genre in ['Country','Blues','Classical','Electronic','Hip Hop', 'Jazz', 'Met
         print(model.predict(song_normal))
         #print(song)
         print(song_proba)
-
+        output_row = []
+        output_row.append(song.strip('.wav'))
+        for proba in song_proba[0]:
+            output_row.append(proba)
+        csvwriter.writerow(output_row)
 ##TODO: Featurize songs##
 
 
