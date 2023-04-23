@@ -33,6 +33,12 @@ print(X.head())
 scaler = StandardScaler()
 X_normal = scaler.fit_transform(np.array(X, dtype=float))
 
+# print(X_normal[0])
+# print(X_normal[1])
+# print(X_normal[2])
+# print(X_normal[3])
+# print(X_normal[4])
+
 # Split the data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X_normal, y, test_size=0.2)
 
@@ -50,6 +56,8 @@ def model_assess(model, title="Default"):
 def model_assess_proba(model, title="Default"):
     model.fit(X_train, y_train)
     preds_proba = model.predict_proba(X_test)
+    # print(preds_proba[0])
+    # print(preds_proba[1])
     preds = []
     for sample in preds_proba:
         preds.append(model.classes_[sample.argmax()])
@@ -76,7 +84,8 @@ lg = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial
 model_assess(lg, "Logistic Regression")
 
 svm = SVC(decision_function_shape="ovo",probability=True)
-model_assess(svm, "Support Vector Machine Proba")
+model_assess(svm, "Support Vector Machine")
+model_assess_proba(svm, "Support Vector Machine Proba")
 
 nn = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5000, 10), random_state=1)
 model_assess(nn, "Neural Nets")
@@ -86,4 +95,7 @@ model_assess(ada, "AdaBoost")
 
 clf = CalibratedClassifierCV(svm)
 model_assess_proba(clf, "CLF based on SVM")
-pickle.dump(svm,open("svm_model.sav",'wb'))
+
+pickle.dump(svm, open("svm_model.sav",'wb'))
+pickle.dump(scaler, open("scaler_model.sav", 'wb'))
+#pickle.dump(lg,open("lg_model.sav",'wb'))
