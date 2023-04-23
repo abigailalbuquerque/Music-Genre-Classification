@@ -2,11 +2,9 @@ import os
 from pydub import AudioSegment
 import multiprocessing as mp
 
-
 GENRES = ['Blues', 'Classical', 'Country', 'Electronic', 'Hip-Hop', 'Jazz', 'Metal', 'Pop', 'Reggae', 'Rock']
 MP3_DIR = "./new_mp3/"
 WAV_DIR = "./new_wav/"
-
 
 def convert_mp3_of_genre_to_wav(genre: str):
 	for mp3_file in os.listdir(MP3_DIR + genre):
