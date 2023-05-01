@@ -91,8 +91,10 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
+print()
 # model summary
 model.summary()
+print()
 
 # train the model
 epochs=10	# TODO: change this (probably to ~10)
