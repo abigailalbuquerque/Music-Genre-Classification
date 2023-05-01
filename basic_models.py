@@ -44,13 +44,13 @@ X_train, X_test, y_train, y_test = train_test_split(X_normal, y, test_size=0.2)
 
 # Encoding the labels
 le = LabelEncoder()
-y_train = le.fit_transform(y_train)
+#y_train = le.fit_transform(y_train)
 
 
 def model_assess(model, title="Default"):
     model.fit(X_train, y_train)
     preds = model.predict(X_test)
-    preds = le.inverse_transform(preds)
+    #preds = le.inverse_transform(preds)
     print('Accuracy', title, ':', round(accuracy_score(y_test, preds), 5))
 
 def model_assess_proba(model, title="Default"):
@@ -61,7 +61,7 @@ def model_assess_proba(model, title="Default"):
     preds = []
     for sample in preds_proba:
         preds.append(model.classes_[sample.argmax()])
-    preds = le.inverse_transform(preds)
+    #preds = le.inverse_transform(preds)
     print('Accuracy', title, ':', round(accuracy_score(y_test, preds), 5))
 
 
